@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -26,14 +27,15 @@ const GRID_PATTERN = `data:image/svg+xml;utf8,<svg width='40' height='40' viewBo
 export default function AuthPage() {
   const navigate = useNavigate();
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
+  const [name, setName] = useState(""); // Add name for sign-up
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [password2, setPassword2] = useState(""); // New: re-enter password
+  const [password2, setPassword2] = useState(""); // re-enter password
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [showOtp, setShowOtp] = useState(false);
-  const [otpValue, setOtpValue] = useState(""); // just for demo (since Supabase uses magic link)
+  const [otpValue, setOtpValue] = useState(""); // just for demo
   const [otpInfo, setOtpInfo] = useState<{ email: string } | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -46,19 +48,26 @@ export default function AuthPage() {
       return;
     }
 
+    if (mode === "sign-up" && name.trim().length === 0) {
+      setError("Please enter your name.");
+      return;
+    }
+
     setLoading(true);
 
     if (mode === "sign-up") {
-      const { error: signUpError } = await supabase.auth.signUp({
+      // Pass name data in user_metadata with signUp
+      const { error: signUpError, data } = await supabase.auth.signUp({
         email,
         password,
         options: {
           emailRedirectTo: window.location.origin + "/",
+          data: { name }, // Will be available as raw_user_meta_data in public.handle_new_user trigger
         },
       });
+
       if (signUpError) {
         setError(signUpError.message);
-        // Custom: If user already exists, show toast and suggest signing in
         if (
           signUpError.message?.toLowerCase().includes("user already registered") ||
           signUpError.message?.toLowerCase().includes("user already exists") ||
@@ -80,17 +89,19 @@ export default function AuthPage() {
         setLoading(false);
         return;
       }
+
       setLoading(false);
 
       setOtpInfo({ email });
       setShowOtp(true);
-      // Custom: Notify user to verify their email after sign up
       toast({
-        title: "Check your email",
+        title: "Verify your email",
         description:
-          "Your account was created! Please check your inbox and follow the email verification link to activate your account.",
+          "Check your inbox for a confirmation email. Click the link to activate your account, then sign in.",
         variant: "default",
       });
+
+      // Optionally: If you want, update the profile with name again here, but with Supabase triggers it should be picked up.
     } else {
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email,
@@ -107,7 +118,7 @@ export default function AuthPage() {
         return;
       }
       setLoading(false);
-      navigate("/");
+      navigate("/"); // Go to dashboard
     }
   }
 
@@ -130,7 +141,7 @@ export default function AuthPage() {
         backgroundPosition: "0 0, 10px 10px",
       }}
     >
-      {/* FocusFlow branding at the top - larger and animated */}
+      {/* Branding */}
       <div className="absolute top-12 left-0 right-0 flex justify-center z-20">
         <div className="flex items-center gap-6">
           <div className="h-12 w-3 rounded-r-md bg-gradient-to-b from-primary to-accent animate-pulse"></div>
@@ -158,19 +169,16 @@ export default function AuthPage() {
           backgroundColor: "hsl(var(--card))",
         }}
       >
-        {/* Heading */}
         <h2 className="text-2xl font-bold text-center mb-2">
           {mode === "sign-in" ? "Sign In to FocusFlow" : "Create your account"}
         </h2>
-        
         {/* Error/Status */}
         {error && (
           <div className="text-destructive text-center whitespace-pre-line text-sm bg-destructive/10 p-3 rounded border border-destructive/20">
             {error}
           </div>
         )}
-        
-        {/* OTP UI */}
+
         {showOtp ? (
           <div className="flex flex-col gap-6 items-center justify-center">
             <span className="text-base text-center text-muted-foreground mb-1">
@@ -179,13 +187,12 @@ export default function AuthPage() {
               <br />
               <span className="text-sm">(Check your email. Mark as not spam if needed.)</span>
             </span>
-            {/* OTP Input */}
             <InputOTP
               maxLength={6}
               value={otpValue}
               onChange={setOtpValue}
               containerClassName="justify-center"
-              disabled // disabled since confirmation is actually by email link in Supabase
+              disabled
             >
               <InputOTPGroup>
                 {[0, 1, 2, 3, 4, 5].map(i => (
@@ -194,7 +201,8 @@ export default function AuthPage() {
               </InputOTPGroup>
             </InputOTP>
             <span className="text-xs text-muted-foreground text-center">
-              Please click the confirmation link in your email to activate your account.
+              Please click the confirmation link in your email to activate your account.<br />
+              After verifying, you can sign in using your email and password.
             </span>
             <Button
               type="button"
@@ -207,6 +215,18 @@ export default function AuthPage() {
           </div>
         ) : (
           <>
+            {mode === "sign-up" && (
+              <Input
+                type="text"
+                placeholder="Name"
+                required
+                value={name}
+                className="mb-2"
+                onChange={e => setName(e.target.value)}
+                disabled={loading}
+                autoComplete="name"
+              />
+            )}
             <Input
               type="email"
               placeholder="Email"
