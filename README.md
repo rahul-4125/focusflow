@@ -1,5 +1,5 @@
 
-# Daily Productivity Tracker
+# FocusFlow
 
 A modern fullstack productivity web app for managing tasks, running Pomodoro sessions, logging daily mood, and tracking insights.
 
