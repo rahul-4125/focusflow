@@ -4,6 +4,10 @@ import ChartWrapper from "@/components/ChartWrapper";
 import MotivationQuote from "@/components/MotivationQuote";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
+// Added: Move these imports up! Replace any require in StaticChart:
+import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
+import { format, subDays } from "date-fns";
+
 /**
  * THIS PAGE SHOWS ONLY PLACEHOLDER VALUES for demo/troubleshooting.
  * All values below are hardcoded for visual feedback when the DB isn't returning data.
@@ -53,13 +57,10 @@ export default function Index() {
   // Overriding ChartWrapper to show static placeholder stats
   function StaticChart({ type }: { type: "tasks" | "pomodoros" | "mood" }) {
     // Use same structure as ChartWrapper, but with placeholder data
-    // (copy from ChartWrapper.tsx, but use the placeholder objects here)
     // Only chart code changed; all styles/cards remain the same.
     // The visuals will match the existing dashboard.
 
     // Placeholders for BarChart/LineChart
-    const { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = require("recharts");
-    const { format, subDays } = require("date-fns");
     const today = new Date();
     const colors = {
       tasks: "#2563eb",
