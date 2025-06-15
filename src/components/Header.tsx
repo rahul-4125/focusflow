@@ -1,5 +1,6 @@
+
 import { useNavigate } from "react-router-dom";
-import { Calendar, Bell, Dot } from "lucide-react";
+import { Calendar } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { AvatarDropdown } from "./UserMenu";
@@ -10,9 +11,6 @@ export default function Header() {
   const navigate = useNavigate();
   const [date] = useState(() => format(new Date(), "PPP"));
   const { profile } = useAuthSession();
-
-  // Dummy state for notification badge demo
-  const [hasNotification] = useState(true);
 
   return (
     <header className="w-full border-b flex items-center px-0 py-0 bg-gradient-to-br from-card/90 via-background/90 to-card/70 backdrop-blur-lg justify-between gap-2 z-20 shadow-xl relative">
@@ -73,20 +71,7 @@ export default function Header() {
         >
           Profile
         </a>
-        {/* Notification bell */}
-        <button
-          className="relative p-2 focus:outline-none rounded-full transition hover:bg-accent group"
-          aria-label="Notifications"
-          tabIndex={0}
-        >
-          <Bell className="w-6 h-6 text-muted-foreground group-hover:text-primary" />
-          {hasNotification && (
-            <span className="absolute top-1 right-1 flex items-center justify-center">
-              <span className="w-2.5 h-2.5 rounded-full bg-destructive border-2 border-card animate-ping absolute opacity-75"></span>
-              <span className="w-2.5 h-2.5 rounded-full bg-destructive border-2 border-card relative"></span>
-            </span>
-          )}
-        </button>
+        {/* Removed notification bell */}
         <DarkModeToggle />
         <AvatarDropdown />
       </nav>
