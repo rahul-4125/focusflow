@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -8,15 +7,20 @@ import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
-  InputOTPSeparator,
 } from "@/components/ui/input-otp";
 
-// Import the logo SVG (for inline img src)
-import focusflowLogo from "@/assets/focusflow-logo.svg";
+// Minimal geometric patterns
+const PATTERN_SVG = `data:image/svg+xml;utf8,<svg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'>
+  <circle cx='30' cy='30' r='1' fill='%23000000' opacity='0.05'/>
+  <circle cx='0' cy='0' r='1' fill='%23000000' opacity='0.05'/>
+  <circle cx='60' cy='0' r='1' fill='%23000000' opacity='0.05'/>
+  <circle cx='0' cy='60' r='1' fill='%23000000' opacity='0.05'/>
+  <circle cx='60' cy='60' r='1' fill='%23000000' opacity='0.05'/>
+</svg>`;
 
-// Pattern SVG background (optional geometrical subtle pattern)
-const PATTERN_SVG =
-  "data:image/svg+xml;utf8,<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'><circle cx='20' cy='20' r='1.5' fill='%239ca3af' opacity='0.1'/></svg>";
+const GRID_PATTERN = `data:image/svg+xml;utf8,<svg width='40' height='40' viewBox='0 0 40 40' fill='none' xmlns='http://www.w3.org/2000/svg'>
+  <path d='M0 20h40M20 0v40' stroke='%23000000' stroke-width='0.5' opacity='0.08'/>
+</svg>`;
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -84,49 +88,46 @@ export default function AuthPage() {
 
   return (
     <div
-      className="min-h-screen flex items-center justify-center bg-background relative overflow-hidden"
+      className="min-h-screen flex flex-col items-center justify-center bg-background relative overflow-hidden"
       style={{
-        // Pattern 1: subtle circle grid
         backgroundImage: `
           url('${PATTERN_SVG}'),
-          repeating-linear-gradient(135deg,rgba(55,84,230,0.04) 0px,rgba(55,84,230,0.06) 4px,transparent 4px,transparent 28px)`,
-        backgroundSize: "40px 40px, 48px 48px",
-        backgroundPosition: "center, center",
+          url('${GRID_PATTERN}')`,
+        backgroundSize: "60px 60px, 40px 40px",
+        backgroundPosition: "0 0, 10px 10px",
       }}
     >
-      {/* Tiled SVG logo in the absolute background */}
-      <div
-        className="absolute inset-0 pointer-events-none z-0 opacity-[0.03]"
-        style={{
-          backgroundImage: `url('${focusflowLogo}')`,
-          backgroundRepeat: "repeat",
-          backgroundSize: "80px 80px",
-          backgroundPosition: "center",
-        }}
-      />
+      {/* FocusFlow branding at the top */}
+      <div className="absolute top-8 left-0 right-0 flex justify-center z-20">
+        <div className="flex items-center gap-4">
+          <div className="h-8 w-2 rounded-r-md bg-gradient-to-b from-primary to-accent"></div>
+          <div className="flex flex-col">
+            <span className="text-2xl font-extrabold tracking-tight font-serif text-primary">
+              FocusFlow
+            </span>
+            <span className="text-xs text-muted-foreground font-mono tracking-wide italic">
+              Flow into productivity and clarity
+            </span>
+          </div>
+        </div>
+      </div>
+
       <form
         onSubmit={handleSubmit}
-        className="relative bg-card p-8 rounded-lg shadow-xl max-w-md w-full flex flex-col gap-5 border z-10 backdrop-blur-sm"
+        className="relative bg-card p-8 rounded-lg shadow-xl max-w-md w-full flex flex-col gap-5 border z-10 backdrop-blur-sm mt-24"
       >
-        {/* Logo above form */}
-        <div className="flex flex-col items-center mb-1">
-          <img
-            src={focusflowLogo}
-            alt="FocusFlow logo"
-            className="mb-3 w-16 h-16 rounded-xl object-cover shadow-sm border"
-            draggable={false}
-          />
-        </div>
         {/* Heading */}
-        <h2 className="text-2xl font-bold text-center mb-2 drop-shadow logo-text">
+        <h2 className="text-2xl font-bold text-center mb-2">
           {mode === "sign-in" ? "Sign In to FocusFlow" : "Create your account"}
         </h2>
+        
         {/* Error/Status */}
         {error && (
-          <div className="text-destructive text-center whitespace-pre-line">
+          <div className="text-destructive text-center whitespace-pre-line text-sm bg-destructive/10 p-3 rounded border border-destructive/20">
             {error}
           </div>
         )}
+        
         {/* OTP UI */}
         {showOtp ? (
           <div className="flex flex-col gap-6 items-center justify-center">
@@ -134,7 +135,7 @@ export default function AuthPage() {
               Enter the 6-digit code sent to{" "}
               <span className="font-semibold">{otpInfo?.email}</span>
               <br />
-              (Check your email. Mark as not spam if needed.)
+              <span className="text-sm">(Check your email. Mark as not spam if needed.)</span>
             </span>
             {/* OTP Input */}
             <InputOTP
@@ -150,8 +151,7 @@ export default function AuthPage() {
                 ))}
               </InputOTPGroup>
             </InputOTP>
-            <span className="text-xs text-muted-foreground">
-              {/* Since this is just UI for now */}
+            <span className="text-xs text-muted-foreground text-center">
               Please click the confirmation link in your email to activate your account.
             </span>
             <Button
