@@ -67,7 +67,7 @@ export async function upsertMood(mood: Omit<TablesInsert<"moods">, "id">) {
   // Upsert by user_id + date
   const { data, error } = await supabase
     .from("moods")
-    .upsert([mood], { onConflict: ["user_id", "date"] })
+    .upsert(mood, { onConflict: "user_id,date" })
     .select()
     .maybeSingle();
   if (error) throw error;
