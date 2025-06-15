@@ -28,7 +28,6 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState(""); // New: re-enter password
-  const [name, setName] = useState(""); // Add name state
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -46,12 +45,6 @@ export default function AuthPage() {
       return;
     }
 
-    // Name validation for sign up
-    if (mode === "sign-up" && !name.trim()) {
-      setError("Name is required.");
-      return;
-    }
-
     setLoading(true);
 
     if (mode === "sign-up") {
@@ -59,7 +52,6 @@ export default function AuthPage() {
         email,
         password,
         options: {
-          data: { username: name.trim() }, // Attach user name as metadata
           emailRedirectTo: window.location.origin + "/",
         },
       });
@@ -91,7 +83,6 @@ export default function AuthPage() {
     setError(null);
     setShowOtp(false);
     setOtpValue("");
-    setName("");
     setMode(newMode);
   }
 
@@ -183,19 +174,6 @@ export default function AuthPage() {
           </div>
         ) : (
           <>
-            {mode === "sign-up" && (
-              <Input
-                type="text"
-                placeholder="Name"
-                required
-                autoComplete="name"
-                value={name}
-                className="mb-2"
-                onChange={e => setName(e.target.value)}
-                disabled={loading}
-                maxLength={30}
-              />
-            )}
             <Input
               type="email"
               placeholder="Email"
