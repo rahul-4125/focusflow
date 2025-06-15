@@ -9,7 +9,7 @@ A modern fullstack productivity web app for managing tasks, running Pomodoro ses
 - **Pomodoro**: 25/5 timer, auto-switch, session count, progress ring
 - **Mood**: Emoji & slider, log 1 per day, mood trends
 - **Insights**: Charts for tasks, pomodoros, mood over time (Recharts)
-- **Authentication**: Secure login/signup (via Supabase or your backend)
+- **Authentication**: Secure login/signup (Supabase or custom backend)
 - **Responsive & Desktop-first UI:** Modern, accessible, beautiful (Vite + React + Tailwind + Zustand + shadcn/ui)
 - **Dark mode**, browser notifications, data export, offline support
 
@@ -18,6 +18,8 @@ A modern fullstack productivity web app for managing tasks, running Pomodoro ses
 ## 🚀 Getting Started
 
 ### 1. Local Setup
+
+Clone the repo and install dependencies:
 
 ```sh
 git clone <this-repo-url>
@@ -28,13 +30,18 @@ npm run dev
 
 ### 2. Backend Setup
 
-**Option A: Supabase (Recommended for Lovable users)**
-- [Follow Lovable's Supabase integration guide](https://docs.lovable.dev/integrations/supabase/) to add DB/auth, enable JWT auth, and auto-generate endpoints for tasks, sessions, mood.
+You can use your own backend or connect to a third-party backend.
 
-**Option B: Node.js + Express + MongoDB/PostgreSQL (Manual)**
-- See `/server.example` (sample code below)—copy to your own /server repo.
-- Configure `.env` as per `.env.sample` below.
-- Run with Docker or locally (`npm install && npm start`).
+**Option A: Supabase**
+- Create a new project on [Supabase](https://supabase.com/)
+- Configure database and authentication.
+- Copy your API keys and update the environment variables as instructed below.
+- The app will communicate via REST/GraphQL endpoints.
+
+**Option B: Node.js + Express + MongoDB/PostgreSQL**
+- See `/server.example` for sample backend code.
+- Configure `.env` and database connection.
+- Run your backend server locally or via Docker.
 
 ### 3. Environment Variables
 
@@ -44,7 +51,7 @@ MONGO_URI=
 JWT_SECRET=
 CLIENT_URL=http://localhost:5173
 ```
-If using Supabase, set up and copy your project keys via their dashboard and Lovable UI.
+For Supabase, set up your project API keys in a `.env` file.
 
 ---
 
@@ -103,17 +110,17 @@ If using Supabase, set up and copy your project keys via their dashboard and Lov
 ## 🖥️ Production Deployment
 
 - **Frontend**
-  - Deploy `src/` on Vercel, Netlify, or a static host.
+  - Deploy the React app on Vercel, Netlify, or any static hosting platform.
 - **Backend**
-  - Deploy Express API (see `/server.example`) on Render/Heroku/DigitalOcean.
-  - _Or_ use Supabase with Lovable's built-in integration (recommended on Lovable).
+  - Deploy Express server (see `/server.example`) on a cloud provider (e.g., Render, Heroku, DigitalOcean).
+  - Or use Supabase for a managed backend.
 
 ---
 
 ## 🧪 Testing
 
 - **Frontend:**  
-  - React Testing Library, minimal examples in `src/__tests__/`
+  - Uses React Testing Library (`src/__tests__/`)
 - **Backend:**  
   - Jest + Supertest (see `/server.example/__tests__/`)
 
@@ -227,11 +234,11 @@ module.exports = mongoose.model("Task", TaskSchema);
 ## ✨ Bonus
 
 - Dark mode, CSV/JSON export, browser notifications
-- 100% responsive, animated, desktop-optimized UI
+- Fully responsive, animated, desktop-optimized UI
 
 ---
 
-## 📚 Full Documentation
+## 📚 Documentation
 
-- See `/server.example/README.md` or ask for more examples.
+For more details, explore the codebase, check component docstrings, or see `/server.example/README.md`.
 
