@@ -1,22 +1,26 @@
 
 import { create } from "zustand";
 import { format } from "date-fns";
+import { fetchTasks, addTask as addTaskAPI, updateTask as updateTaskAPI, deleteTask as deleteTaskAPI } from "@/utils/api";
+import { useAuthSession } from "@/hooks/useAuthSession";
+
 export interface Task {
   id: string;
   title: string;
   category: "Work" | "Study" | "Personal";
-  dueTime: string;
+  due_time?: string;
   completed: boolean;
-  userId: string;
-  createdAt: string; // ISO date
+  user_id: string;
+  created_at: string;
 }
 interface State {
   tasks: Task[];
-  addTask: (task: Omit<Task, "id" | "createdAt">) => void;
-  updateTask: (id: string, data: Partial<Task>) => void;
-  deleteTask: (id: string) => void;
-  toggleComplete: (id: string) => void;
-
+  loading: boolean;
+  fetchTasks: () => Promise<void>;
+  addTask: (task: Omit<Task, "id" | "created_at">) => Promise<void>;
+  updateTask: (id: string, data: Partial<Task>) => Promise<void>;
+  deleteTask: (id: string) => Promise<void>;
+  toggleComplete: (id: string) => Promise<void>;
   completedToday: number;
   weekStats: Record<string, number>;
 }
@@ -27,44 +31,53 @@ function getToday() {
 
 export const useTasksStore = create<State>((set, get) => ({
   tasks: [],
-  addTask: (t) =>
-    set((state) => {
-      const createdAt = new Date().toISOString();
-      const id = Math.random().toString(36).slice(2, 9);
-      return {
-        tasks: [
-          ...state.tasks,
-          {
-            ...t,
-            id,
-            completed: false,
-            createdAt,
-          },
-        ],
-      };
-    }),
-  updateTask: (id, data) =>
+  loading: false,
+  fetchTasks: async function () {
+    set({ loading: true });
+    const data = await fetchTasks();
+    set({ tasks: data, loading: false });
+  },
+  addTask: async function (task) {
+    // Needs user_id, due_time optional
+    const { profile } = useAuthSession.getState();
+    if (!profile?.id) return;
+    const newTask = {
+      ...task,
+      user_id: profile.id,
+      due_time: task.due_time ?? "",
+      completed: false
+    };
+    const t = await addTaskAPI(newTask);
+    set((state) => ({ tasks: [t, ...state.tasks] }));
+  },
+  updateTask: async function (id, data) {
+    const t = await updateTaskAPI(id, data);
     set((state) => ({
-      tasks: state.tasks.map((t) => (t.id === id ? { ...t, ...data } : t)),
-    })),
-  deleteTask: (id) =>
+      tasks: state.tasks.map((task) => (task.id === id ? t : task)),
+    }));
+  },
+  deleteTask: async function (id) {
+    await deleteTaskAPI(id);
     set((state) => ({
       tasks: state.tasks.filter((t) => t.id !== id),
-    })),
-  toggleComplete: (id) =>
+    }));
+  },
+  toggleComplete: async function (id) {
+    const task = get().tasks.find((t) => t.id === id);
+    if (!task) return;
+    await updateTaskAPI(id, { completed: !task.completed });
     set((state) => ({
       tasks: state.tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
-    })),
+    }));
+  },
   get completedToday() {
     return get()
-      .tasks.filter(
-        (t) => t.completed && t.createdAt.startsWith(getToday())
-      ).length;
+      .tasks.filter((t) => t.completed && t.created_at.startsWith(getToday())).length;
   },
   get weekStats() {
     const stats: Record<string, number> = {};
     for (const t of get().tasks) {
-      const d = t.createdAt.slice(0, 10);
+      const d = t.created_at.slice(0, 10);
       if (t.completed) stats[d] = (stats[d] || 0) + 1;
     }
     return stats;

@@ -9,6 +9,54 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      moods: {
+        Row: {
+          date: string
+          id: string
+          rating: number
+          user_id: string
+        }
+        Insert: {
+          date: string
+          id?: string
+          rating: number
+          user_id: string
+        }
+        Update: {
+          date?: string
+          id?: string
+          rating?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      pomodoros: {
+        Row: {
+          created_at: string
+          end_time: string | null
+          id: string
+          session_count: number
+          start_time: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          session_count: number
+          start_time: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          end_time?: string | null
+          id?: string
+          session_count?: number
+          start_time?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -30,6 +78,36 @@ export type Database = {
           id?: string
           updated_at?: string | null
           username?: string | null
+        }
+        Relationships: []
+      }
+      tasks: {
+        Row: {
+          category: string
+          completed: boolean
+          created_at: string
+          due_time: string | null
+          id: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          completed?: boolean
+          created_at?: string
+          due_time?: string | null
+          id?: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          completed?: boolean
+          created_at?: string
+          due_time?: string | null
+          id?: string
+          title?: string
+          user_id?: string
         }
         Relationships: []
       }

@@ -1,40 +1,54 @@
 
 import { create } from "zustand";
 import { format } from "date-fns";
+import { fetchMoods, upsertMood } from "@/utils/api";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 interface MoodEntry {
+  id: string;
   date: string; // yyyy-MM-dd
   rating: number;
-  userId: string;
+  user_id: string;
 }
-
 interface State {
   moods: MoodEntry[];
-  addMood: (rating: number) => void;
+  loading: boolean;
+  fetchMoods: () => Promise<void>;
+  addMood: (rating: number) => Promise<void>;
   todayMood: number | null;
   weekStats: Record<string, number>;
 }
+
 function today() {
   return format(new Date(), "yyyy-MM-dd");
 }
 
 export const useMoodStore = create<State>((set, get) => ({
   moods: [],
-  addMood: (rating) =>
+  loading: false,
+  fetchMoods: async function () {
+    set({ loading: true });
+    const data = await fetchMoods();
+    set({ moods: data, loading: false });
+  },
+  addMood: async function (rating: number) {
+    const { profile } = useAuthSession.getState();
+    if (!profile?.id) return;
+    const d = today();
+    const added = await upsertMood({ user_id: profile.id, date: d, rating });
     set((state) => {
-      const d = today();
-      // one per day
-      if (state.moods.some((m) => m.date === d)) {
+      // update or add
+      const prevIdx = state.moods.findIndex((m) => m.date === d);
+      if (prevIdx !== -1) {
         return {
-          moods: state.moods.map((m) =>
-            m.date === d ? { ...m, rating } : m
-          ),
+          moods: state.moods.map((m, i) => (i === prevIdx ? added : m)),
         };
       }
       return {
-        moods: [...state.moods, { date: d, rating, userId: "" }],
+        moods: [added, ...state.moods],
       };
-    }),
+    });
+  },
   get todayMood() {
     const found = get().moods.find((m) => m.date === today());
     return found ? found.rating : null;
@@ -45,5 +59,5 @@ export const useMoodStore = create<State>((set, get) => ({
       stats[m.date] = m.rating;
     }
     return stats;
-  },
+  }
 }));
