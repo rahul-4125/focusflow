@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { format } from "date-fns";
 import { fetchTasks, addTask as addTaskAPI, updateTask as updateTaskAPI, deleteTask as deleteTaskAPI } from "@/utils/api";
@@ -76,6 +75,8 @@ export const useTasksStore = create<State>((set, get) => ({
     set((state) => ({
       tasks: state.tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t),
     }));
+    // Refresh tasks to update statistics and chart, so UI always matches DB
+    await get().fetchTasks();
   },
   get completedToday() {
     return get()

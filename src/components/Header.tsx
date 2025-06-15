@@ -68,12 +68,6 @@ export default function Header() {
           <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary/40 scale-x-0 group-hover:scale-x-100 group-focus:scale-x-100 transition-transform origin-bottom-right rounded" />
         </a>
         <a
-          href="/insights"
-          className="story-link px-3 py-2 rounded font-medium hover:bg-accent transition relative group hidden md:inline"
-        >
-          Insights
-        </a>
-        <a
           href="/profile"
           className="story-link px-3 py-2 rounded font-medium hover:bg-accent transition relative group"
         >
