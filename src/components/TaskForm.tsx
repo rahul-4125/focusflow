@@ -40,7 +40,14 @@ export default function TaskForm({ editTask, onClose }: Props) {
     if (editTask) {
       updateTask(editTask.id, data);
     } else {
-      addTask({ ...data, completed: false, userId: "" });
+      // Pass all required fields explicitly so type is satisfied
+      addTask({
+        title: data.title,
+        category: data.category,
+        dueTime: data.dueTime,
+        completed: false,
+        userId: "",
+      });
     }
     reset();
     onClose();
