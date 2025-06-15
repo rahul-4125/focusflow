@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -97,15 +98,15 @@ export default function AuthPage() {
         backgroundPosition: "0 0, 10px 10px",
       }}
     >
-      {/* FocusFlow branding at the top */}
-      <div className="absolute top-8 left-0 right-0 flex justify-center z-20">
-        <div className="flex items-center gap-4">
-          <div className="h-8 w-2 rounded-r-md bg-gradient-to-b from-primary to-accent"></div>
+      {/* FocusFlow branding at the top - larger and animated */}
+      <div className="absolute top-12 left-0 right-0 flex justify-center z-20">
+        <div className="flex items-center gap-6">
+          <div className="h-12 w-3 rounded-r-md bg-gradient-to-b from-primary to-accent animate-pulse"></div>
           <div className="flex flex-col">
-            <span className="text-2xl font-extrabold tracking-tight font-serif text-primary">
+            <span className="text-5xl font-extrabold tracking-tight font-serif text-primary animate-fade-in">
               FocusFlow
             </span>
-            <span className="text-xs text-muted-foreground font-mono tracking-wide italic">
+            <span className="text-sm text-muted-foreground font-mono tracking-wide italic animate-fade-in delay-300">
               Flow into productivity and clarity
             </span>
           </div>
@@ -114,7 +115,16 @@ export default function AuthPage() {
 
       <form
         onSubmit={handleSubmit}
-        className="relative bg-card p-8 rounded-lg shadow-xl max-w-md w-full flex flex-col gap-5 border z-10 backdrop-blur-sm mt-24"
+        className="relative bg-card p-8 rounded-lg shadow-xl max-w-md w-full flex flex-col gap-5 border z-10 backdrop-blur-sm mt-32"
+        style={{
+          backgroundImage: `
+            url('${PATTERN_SVG}'),
+            url('${GRID_PATTERN}')`,
+          backgroundSize: "40px 40px, 25px 25px",
+          backgroundPosition: "0 0, 5px 5px",
+          backgroundBlendMode: "multiply",
+          backgroundColor: "hsl(var(--card))",
+        }}
       >
         {/* Heading */}
         <h2 className="text-2xl font-bold text-center mb-2">
