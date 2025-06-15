@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -180,29 +179,15 @@ export default function AuthPage() {
         )}
 
         {showOtp ? (
+          // Only show the verification link message, no code input.
           <div className="flex flex-col gap-6 items-center justify-center">
             <span className="text-base text-center text-muted-foreground mb-1">
-              Enter the 6-digit code sent to{" "}
-              <span className="font-semibold">{otpInfo?.email}</span>
+              A verification link has been sent to <span className="font-semibold">{otpInfo?.email}</span>.
               <br />
-              <span className="text-sm">(Check your email. Mark as not spam if needed.)</span>
+              Please check your inbox (and spam folder) and click the verification link to activate your account.
             </span>
-            <InputOTP
-              maxLength={6}
-              value={otpValue}
-              onChange={setOtpValue}
-              containerClassName="justify-center"
-              disabled
-            >
-              <InputOTPGroup>
-                {[0, 1, 2, 3, 4, 5].map(i => (
-                  <InputOTPSlot key={i} index={i} />
-                ))}
-              </InputOTPGroup>
-            </InputOTP>
             <span className="text-xs text-muted-foreground text-center">
-              Please click the confirmation link in your email to activate your account.<br />
-              After verifying, you can sign in using your email and password.
+              After verifying your email, you can sign in using your email and password.
             </span>
             <Button
               type="button"
