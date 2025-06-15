@@ -32,7 +32,7 @@ export const useMoodStore = create<State>((set, get) => ({
     set({ moods: data, loading: false });
   },
   addMood: async function (rating: number) {
-    const { profile } = useAuthSession.getState();
+    const profile = useAuthSession().profile;
     if (!profile?.id) return;
     const d = today();
     const added = await upsertMood({ user_id: profile.id, date: d, rating });

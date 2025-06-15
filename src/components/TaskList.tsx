@@ -37,7 +37,7 @@ export default function TaskList() {
               </div>
               <div className="text-xs text-muted-foreground flex gap-2">
                 <span className="px-2 py-0.5 rounded bg-muted">{task.category}</span>
-                <span className="ml-2">{task.dueTime && `Due: ${task.dueTime}`}</span>
+                <span className="ml-2">{task.due_time && `Due: ${task.due_time}`}</span>
               </div>
             </div>
           </div>

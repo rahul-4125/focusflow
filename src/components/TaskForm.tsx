@@ -12,7 +12,7 @@ interface Props {
 const formSchema = z.object({
   title: z.string().min(2, "Title required"),
   category: z.enum(["Work", "Study", "Personal"]),
-  dueTime: z.string().min(1, "Due time required"),
+  due_time: z.string().min(1, "Due time required"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -31,22 +31,21 @@ export default function TaskForm({ editTask, onClose }: Props) {
       ? {
           title: editTask.title,
           category: editTask.category,
-          dueTime: editTask.dueTime,
+          due_time: editTask.due_time ?? "",
         }
-      : { title: "", category: "Work", dueTime: "" },
+      : { title: "", category: "Work", due_time: "" },
   });
 
   const onSubmit = (data: FormValues) => {
     if (editTask) {
       updateTask(editTask.id, data);
     } else {
-      // Pass all required fields explicitly so type is satisfied
       addTask({
         title: data.title,
         category: data.category,
-        dueTime: data.dueTime,
+        due_time: data.due_time,
         completed: false,
-        userId: "",
+        user_id: "",
       });
     }
     reset();
@@ -82,15 +81,15 @@ export default function TaskForm({ editTask, onClose }: Props) {
           </select>
         </div>
         <div>
-          <label className="block mb-1 font-medium" htmlFor="dueTime">Due Time</label>
+          <label className="block mb-1 font-medium" htmlFor="due_time">Due Time</label>
           <input
-            id="dueTime"
-            {...register("dueTime")}
+            id="due_time"
+            {...register("due_time")}
             type="time"
             className="w-full border rounded px-3 py-2"
-            aria-invalid={!!errors.dueTime}
+            aria-invalid={!!errors.due_time}
           />
-          {errors.dueTime && <span className="text-red-700 text-xs">{errors.dueTime.message}</span>}
+          {errors.due_time && <span className="text-red-700 text-xs">{errors.due_time.message}</span>}
         </div>
         <div className="flex gap-2 justify-end">
           <button type="button" className="text-muted-foreground px-4 py-2 rounded hover:bg-muted" onClick={onClose}>

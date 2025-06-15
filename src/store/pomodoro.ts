@@ -52,7 +52,7 @@ export const usePomodoroStore = create<State>((set, get) => ({
   finishSession: async function () {
     const now = new Date().toISOString();
     let { isBreak, currentSession } = get();
-    const { profile } = useAuthSession.getState();
+    const profile = useAuthSession().profile;
     if (!profile?.id) return;
 
     if (!isBreak) {

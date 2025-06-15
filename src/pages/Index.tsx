@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import SummaryCard from "@/components/SummaryCard";
 import ChartWrapper from "@/components/ChartWrapper";
@@ -19,7 +20,7 @@ export default function Index() {
 
   // Calculate simulated progress for today (fake, for the bar)
   const totalTasksToday = tasks?.filter((t) =>
-    t.createdAt?.startsWith?.(new Date().toISOString().slice(0, 10))
+    t.created_at?.startsWith?.(new Date().toISOString().slice(0, 10))
   )?.length || 0;
   const progress =
     totalTasksToday > 0
@@ -75,7 +76,7 @@ export default function Index() {
         </section>
 
         {/* Divider */}
-        <div className="relative text-sm flex items-center mx-auto w-full max-w-2xl py-2">
+        <div className="relative text-sm flex items-center mx-auto w/full max-w-2xl py-2">
           <span className="flex-grow h-px bg-gradient-to-r from-accent/40 via-border/60 to-accent/20 rounded" />
           <span className="px-4 uppercase tracking-widest text-muted-foreground/80 font-semibold font-mono">Statistics</span>
           <span className="flex-grow h-px bg-gradient-to-l from-accent/40 via-border/60 to-accent/20 rounded" />

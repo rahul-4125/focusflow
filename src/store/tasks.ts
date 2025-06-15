@@ -8,7 +8,7 @@ export interface Task {
   id: string;
   title: string;
   category: "Work" | "Study" | "Personal";
-  due_time?: string;
+  due_time?: string | null;
   completed: boolean;
   user_id: string;
   created_at: string;
@@ -35,11 +35,18 @@ export const useTasksStore = create<State>((set, get) => ({
   fetchTasks: async function () {
     set({ loading: true });
     const data = await fetchTasks();
-    set({ tasks: data, loading: false });
+    // Map raw results to our Task type, specifically category.
+    set({ 
+      tasks: data.map((t) => ({
+        ...t,
+        category: t.category as "Work" | "Study" | "Personal",
+        due_time: t.due_time ?? "",
+      })),
+      loading: false
+    });
   },
   addTask: async function (task) {
-    // Needs user_id, due_time optional
-    const { profile } = useAuthSession.getState();
+    const profile = useAuthSession().profile;
     if (!profile?.id) return;
     const newTask = {
       ...task,
@@ -48,12 +55,14 @@ export const useTasksStore = create<State>((set, get) => ({
       completed: false
     };
     const t = await addTaskAPI(newTask);
-    set((state) => ({ tasks: [t, ...state.tasks] }));
+    set((state) => ({
+      tasks: [{ ...t, category: t.category as "Work" | "Study" | "Personal" }, ...state.tasks],
+    }));
   },
   updateTask: async function (id, data) {
     const t = await updateTaskAPI(id, data);
     set((state) => ({
-      tasks: state.tasks.map((task) => (task.id === id ? t : task)),
+      tasks: state.tasks.map((task) => (task.id === id ? { ...t, category: t.category as "Work" | "Study" | "Personal" } : task)),
     }));
   },
   deleteTask: async function (id) {
@@ -67,7 +76,7 @@ export const useTasksStore = create<State>((set, get) => ({
     if (!task) return;
     await updateTaskAPI(id, { completed: !task.completed });
     set((state) => ({
-      tasks: state.tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
+      tasks: state.tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t),
     }));
   },
   get completedToday() {
