@@ -1,9 +1,18 @@
 
 import { useState } from "react";
-import { Smile } from "lucide-react";
+import { Smile, LogOut } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 export function AvatarDropdown() {
   const [open, setOpen] = useState(false);
+  const { profile } = useAuthSession();
+
+  async function handleLogout() {
+    await supabase.auth.signOut();
+    setOpen(false);
+    window.location.href = "/auth";
+  }
 
   return (
     <div className="relative">
@@ -20,14 +29,14 @@ export function AvatarDropdown() {
           tabIndex={-1}
           onBlur={() => setOpen(false)}
         >
-          <div className="px-4 py-2 border-b">User Name</div>
+          <div className="px-4 py-2 border-b text-ellipsis overflow-hidden whitespace-nowrap">
+            {profile?.username ? profile.username : "User"}
+          </div>
           <button
-            className="w-full text-left px-4 py-2 hover:bg-accent rounded transition"
-            onClick={() => {
-              setOpen(false);
-              // add logout logic here
-            }}
+            className="w-full text-left px-4 py-2 hover:bg-accent rounded transition flex items-center gap-2"
+            onClick={handleLogout}
           >
+            <LogOut className="w-4 h-4 mr-1 opacity-70" />
             Logout
           </button>
         </div>

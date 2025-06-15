@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -10,6 +9,27 @@ import Tasks from "./pages/Tasks";
 import Pomodoro from "./pages/Pomodoro";
 import Mood from "./pages/Mood";
 import Insights from "./pages/Insights";
+import AuthPage from "./pages/Auth";
+import { useAuthSession } from "@/hooks/useAuthSession";
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { session, loading } = useAuthSession();
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-background text-lg">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!session) {
+    window.location.href = "/auth";
+    return null;
+  }
+
+  return <>{children}</>;
+}
 
 const queryClient = new QueryClient();
 
@@ -20,11 +40,49 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/pomodoro" element={<Pomodoro />} />
-          <Route path="/mood" element={<Mood />} />
-          <Route path="/insights" element={<Insights />} />
+          {/* Protect all main routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Index />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/tasks"
+            element={
+              <ProtectedRoute>
+                <Tasks />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/pomodoro"
+            element={
+              <ProtectedRoute>
+                <Pomodoro />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/mood"
+            element={
+              <ProtectedRoute>
+                <Mood />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/insights"
+            element={
+              <ProtectedRoute>
+                <Insights />
+              </ProtectedRoute>
+            }
+          />
+          {/* Auth (login/signup) route is public */}
+          <Route path="/auth" element={<AuthPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import SummaryCard from "@/components/SummaryCard";
 import ChartWrapper from "@/components/ChartWrapper";
@@ -9,12 +8,14 @@ import { format } from "date-fns";
 import { ProgressBar } from "./_ProgressBar";
 import MotivationQuote from "@/components/MotivationQuote";
 import { useMemo } from "react";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 export default function Index() {
   const today = format(new Date(), "PPP");
   const { completedToday, tasks } = useTasksStore();
   const { pomodorosToday } = usePomodoroStore();
   const { todayMood } = useMoodStore();
+  const { profile } = useAuthSession();
 
   // Calculate simulated progress for today (fake, for the bar)
   const totalTasksToday = tasks?.filter((t) =>
@@ -31,6 +32,12 @@ export default function Index() {
     <div className="min-h-screen w-full bg-background flex flex-col">
       <Header />
       <main className="flex-1 flex flex-col gap-8 px-4 md:px-8 py-6 max-w-7xl mx-auto w-full animate-fade-in">
+        {/* Welcome message if user's profile detected */}
+        {profile?.username && (
+          <div className="max-w-2xl mx-auto mt-2 mb-2 text-lg font-mono text-primary/90 text-center">
+            Welcome, {profile.username}!
+          </div>
+        )}
         {/* Gradient background layer */}
         <div className="absolute inset-0 bg-gradient-to-br from-accent/40 via-transparent to-primary/20 pointer-events-none -z-10"></div>
         
