@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { format } from "date-fns";
 import { fetchTasks, addTask as addTaskAPI, updateTask as updateTaskAPI, deleteTask as deleteTaskAPI } from "@/utils/api";
-import { useAuthSession } from "@/hooks/useAuthSession";
+// Removed import { useAuthSession } from "@/hooks/useAuthSession";
 
 export interface Task {
   id: string;
@@ -17,7 +17,7 @@ interface State {
   tasks: Task[];
   loading: boolean;
   fetchTasks: () => Promise<void>;
-  addTask: (task: Omit<Task, "id" | "created_at">) => Promise<void>;
+  addTask: (task: Omit<Task, "id" | "created_at">, user_id: string) => Promise<void>;
   updateTask: (id: string, data: Partial<Task>) => Promise<void>;
   deleteTask: (id: string) => Promise<void>;
   toggleComplete: (id: string) => Promise<void>;
@@ -35,7 +35,6 @@ export const useTasksStore = create<State>((set, get) => ({
   fetchTasks: async function () {
     set({ loading: true });
     const data = await fetchTasks();
-    // Map raw results to our Task type, specifically category.
     set({ 
       tasks: data.map((t) => ({
         ...t,
@@ -45,12 +44,11 @@ export const useTasksStore = create<State>((set, get) => ({
       loading: false
     });
   },
-  addTask: async function (task) {
-    const profile = useAuthSession().profile;
-    if (!profile?.id) return;
+  addTask: async function (task, user_id) {
+    if (!user_id) return;
     const newTask = {
       ...task,
-      user_id: profile.id,
+      user_id,
       due_time: task.due_time ?? "",
       completed: false
     };

@@ -1,5 +1,6 @@
 
 import { useMoodStore } from "@/store/mood";
+import { useAuthSession } from "@/hooks/useAuthSession";
 import { useState } from "react";
 
 const MOODS = [
@@ -12,11 +13,14 @@ const MOODS = [
 
 export default function MoodPicker() {
   const { addMood, todayMood } = useMoodStore();
+  const { profile } = useAuthSession();
   const [selected, setSelected] = useState<number | null>(todayMood);
 
   const handleSelect = (value: number) => {
     setSelected(value);
-    addMood(value);
+    if (profile?.id) {
+      addMood(value, profile.id);
+    }
   };
 
   return (

@@ -3,6 +3,7 @@ import { useTasksStore, Task } from "@/store/tasks";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 interface Props {
   editTask?: Task;
@@ -19,6 +20,7 @@ type FormValues = z.infer<typeof formSchema>;
 
 export default function TaskForm({ editTask, onClose }: Props) {
   const { addTask, updateTask } = useTasksStore();
+  const { profile } = useAuthSession();
 
   const {
     register,
@@ -39,14 +41,17 @@ export default function TaskForm({ editTask, onClose }: Props) {
   const onSubmit = (data: FormValues) => {
     if (editTask) {
       updateTask(editTask.id, data);
-    } else {
-      addTask({
-        title: data.title,
-        category: data.category,
-        due_time: data.due_time,
-        completed: false,
-        user_id: "",
-      });
+    } else if (profile?.id) {
+      addTask(
+        {
+          title: data.title,
+          category: data.category,
+          due_time: data.due_time,
+          completed: false,
+          user_id: profile.id, // for types, actual set in store
+        },
+        profile.id
+      );
     }
     reset();
     onClose();

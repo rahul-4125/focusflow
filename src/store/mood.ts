@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { format } from "date-fns";
 import { fetchMoods, upsertMood } from "@/utils/api";
-import { useAuthSession } from "@/hooks/useAuthSession";
+// Removed: import { useAuthSession } from "@/hooks/useAuthSession";
 
 interface MoodEntry {
   id: string;
@@ -14,7 +14,7 @@ interface State {
   moods: MoodEntry[];
   loading: boolean;
   fetchMoods: () => Promise<void>;
-  addMood: (rating: number) => Promise<void>;
+  addMood: (rating: number, user_id: string) => Promise<void>;
   todayMood: number | null;
   weekStats: Record<string, number>;
 }
@@ -31,11 +31,10 @@ export const useMoodStore = create<State>((set, get) => ({
     const data = await fetchMoods();
     set({ moods: data, loading: false });
   },
-  addMood: async function (rating: number) {
-    const profile = useAuthSession().profile;
-    if (!profile?.id) return;
+  addMood: async function (rating, user_id) {
+    if (!user_id) return;
     const d = today();
-    const added = await upsertMood({ user_id: profile.id, date: d, rating });
+    const added = await upsertMood({ user_id, date: d, rating });
     set((state) => {
       // update or add
       const prevIdx = state.moods.findIndex((m) => m.date === d);
