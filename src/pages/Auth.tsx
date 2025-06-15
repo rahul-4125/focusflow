@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
@@ -9,6 +8,7 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { toast } from "@/components/ui/use-toast";
 
 // Minimal geometric patterns
 const PATTERN_SVG = `data:image/svg+xml;utf8,<svg width='60' height='60' viewBox='0 0 60 60' fill='none' xmlns='http://www.w3.org/2000/svg'>
@@ -58,12 +58,39 @@ export default function AuthPage() {
       });
       if (signUpError) {
         setError(signUpError.message);
+        // Custom: If user already exists, show toast and suggest signing in
+        if (
+          signUpError.message?.toLowerCase().includes("user already registered") ||
+          signUpError.message?.toLowerCase().includes("user already exists") ||
+          signUpError.message?.toLowerCase().includes("already signed up")
+        ) {
+          toast({
+            title: "Account already exists",
+            description:
+              "An account with this email already exists. Please sign in instead.",
+            variant: "default",
+          });
+        } else {
+          toast({
+            title: "Sign up failed",
+            description: signUpError.message,
+            variant: "destructive",
+          });
+        }
         setLoading(false);
         return;
       }
       setLoading(false);
+
       setOtpInfo({ email });
       setShowOtp(true);
+      // Custom: Notify user to verify their email after sign up
+      toast({
+        title: "Check your email",
+        description:
+          "Your account was created! Please check your inbox and follow the email verification link to activate your account.",
+        variant: "default",
+      });
     } else {
       const { error: loginError } = await supabase.auth.signInWithPassword({
         email,
@@ -71,6 +98,11 @@ export default function AuthPage() {
       });
       if (loginError) {
         setError(loginError.message);
+        toast({
+          title: "Sign in failed",
+          description: loginError.message,
+          variant: "destructive",
+        });
         setLoading(false);
         return;
       }
