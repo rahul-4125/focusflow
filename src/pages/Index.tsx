@@ -1,3 +1,4 @@
+
 import Header from "@/components/Header";
 import SummaryCard from "@/components/SummaryCard";
 import ChartWrapper from "@/components/ChartWrapper";
@@ -9,6 +10,7 @@ import { ProgressBar } from "./_ProgressBar";
 import MotivationQuote from "@/components/MotivationQuote";
 import { useMemo } from "react";
 import { useAuthSession } from "@/hooks/useAuthSession";
+import { Sparkles } from "lucide-react";
 
 export default function Index() {
   const today = format(new Date(), "PPP");
@@ -32,10 +34,19 @@ export default function Index() {
     <div className="min-h-screen w-full bg-background flex flex-col">
       <Header />
       <main className="flex-1 flex flex-col gap-8 px-4 md:px-8 py-6 max-w-7xl mx-auto w-full animate-fade-in">
-        {/* Welcome message if user's profile detected */}
-        {profile?.username && (
-          <div className="max-w-2xl mx-auto mt-2 mb-2 text-lg font-mono text-primary/90 text-center">
-            Welcome, {profile.username}!
+        {/* Personalized Welcome Message */}
+        {profile?.username ? (
+          <div className="max-w-2xl mx-auto mt-2 mb-2 text-lg font-mono text-primary/90 text-center flex items-center justify-center gap-2">
+            <span>Welcome back, <span className="font-extrabold">{profile.username}</span>!</span>
+            <Sparkles className="w-5 h-5 text-accent -mt-1" />
+          </div>
+        ) : (
+          <div className="max-w-2xl mx-auto mt-2 mb-2 text-lg font-mono text-primary/90 text-center flex flex-col items-center animate-fade-in">
+            <span>Hello, friend! 🎉</span>
+            <span className="text-sm text-muted-foreground mt-2">
+              Personalize your dashboard by <span className="underline underline-offset-4">setting your name in the user menu</span> (top right)!<br />
+              <span className="italic text-accent/90 text-xs">You deserve a personal motivator experience 😊</span>
+            </span>
           </div>
         )}
         {/* Gradient background layer */}
@@ -91,3 +102,4 @@ export default function Index() {
     </div>
   );
 }
+
