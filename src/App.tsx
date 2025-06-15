@@ -10,6 +10,8 @@ import Pomodoro from "./pages/Pomodoro";
 import Mood from "./pages/Mood";
 import Insights from "./pages/Insights";
 import AuthPage from "./pages/Auth";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import { useAuthSession } from "@/hooks/useAuthSession";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -81,9 +83,11 @@ const App = () => (
               </ProtectedRoute>
             }
           />
-          {/* Auth (login/signup) route is public */}
-          <Route path="/auth" element={<AuthPage />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          {/* Auth routes - now separated */}
+          <Route path="/signin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          {/* Optionally, redirect /auth to /signin */}
+          <Route path="/auth" element={<SignIn />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
