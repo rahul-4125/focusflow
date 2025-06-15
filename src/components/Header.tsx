@@ -1,14 +1,15 @@
-
 import { useNavigate } from "react-router-dom";
 import { Calendar, Bell, Dot } from "lucide-react";
 import { useState } from "react";
 import { format } from "date-fns";
 import { AvatarDropdown } from "./UserMenu";
 import DarkModeToggle from "./DarkModeToggle";
+import { useAuthSession } from "@/hooks/useAuthSession";
 
 export default function Header() {
   const navigate = useNavigate();
   const [date] = useState(() => format(new Date(), "PPP"));
+  const { profile } = useAuthSession();
 
   // Dummy state for notification badge demo
   const [hasNotification] = useState(true);
@@ -31,6 +32,9 @@ export default function Header() {
         </div>
         <span className="hidden md:inline-flex mx-5 h-8 w-[1.5px] bg-border rounded" />
         <span className="flex items-center text-muted-foreground text-sm gap-1 font-mono ml-2">
+          {profile?.name && (
+            <span className="font-semibold">{profile.name}</span>
+          )}
           <Calendar className="w-4 h-4" /> {date}
         </span>
       </div>
@@ -68,6 +72,12 @@ export default function Header() {
           className="story-link px-3 py-2 rounded font-medium hover:bg-accent transition relative group hidden md:inline"
         >
           Insights
+        </a>
+        <a
+          href="/profile"
+          className="story-link px-3 py-2 rounded font-medium hover:bg-accent transition relative group"
+        >
+          Profile
         </a>
         {/* Notification bell */}
         <button

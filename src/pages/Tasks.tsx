@@ -3,10 +3,15 @@ import Header from "@/components/Header";
 import TaskList from "@/components/TaskList";
 import { Button } from "@/components/ui/button";
 import TaskForm from "@/components/TaskForm";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTasksStore } from "@/store/tasks";
 
 const Tasks = () => {
   const [showModal, setShowModal] = useState(false);
+  const { fetchTasks } = useTasksStore();
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
   return (
     <div className="min-h-screen w-full bg-background flex flex-col">
       <Header />

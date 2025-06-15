@@ -1,8 +1,12 @@
-
 import Header from "@/components/Header";
 import MoodPicker from "@/components/MoodPicker";
+import { useEffect } from "react";
+import { useMoodStore } from "@/store/mood";
 
 export default function Mood() {
+  useEffect(() => {
+    useMoodStore.getState().fetchMoods();
+  }, []);
   return (
     <div className="min-h-screen w-full bg-background flex flex-col">
       <Header />

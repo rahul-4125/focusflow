@@ -1,4 +1,3 @@
-
 import Header from "@/components/Header";
 import SummaryCard from "@/components/SummaryCard";
 import ChartWrapper from "@/components/ChartWrapper";
@@ -10,6 +9,7 @@ import { ProgressBar } from "./_ProgressBar";
 import MotivationQuote from "@/components/MotivationQuote";
 import { useMemo } from "react";
 import { useAuthSession } from "@/hooks/useAuthSession";
+import { useEffect } from "react";
 
 export default function Index() {
   const today = format(new Date(), "PPP");
@@ -28,6 +28,13 @@ export default function Index() {
       : completedToday > 0
         ? 100
         : 0;
+
+  useEffect(() => {
+    // Load tasks/pomodoros/moods if not present (for in-memory rehydration)
+    useTasksStore.getState().fetchTasks();
+    usePomodoroStore.getState().fetchPomodoros?.();
+    useMoodStore.getState().fetchMoods();
+  }, []);
 
   return (
     <div className="min-h-screen w-full bg-background flex flex-col">

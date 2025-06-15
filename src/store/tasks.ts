@@ -90,3 +90,8 @@ export const useTasksStore = create<State>((set, get) => ({
     return stats;
   },
 }));
+// On definition above, add this snippet at the end so data is always loaded on page load:
+if (typeof window !== "undefined") {
+  // Preload tasks on page load
+  useTasksStore.getState().fetchTasks();
+}

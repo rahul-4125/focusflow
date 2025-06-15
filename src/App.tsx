@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -8,8 +9,7 @@ import NotFound from "./pages/NotFound";
 import Tasks from "./pages/Tasks";
 import Pomodoro from "./pages/Pomodoro";
 import Mood from "./pages/Mood";
-import Insights from "./pages/Insights";
-import AuthPage from "./pages/Auth";
+import ProfilePage from "./pages/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import { useAuthSession } from "@/hooks/useAuthSession";
@@ -76,14 +76,14 @@ const App = () => (
             }
           />
           <Route
-            path="/insights"
+            path="/profile"
             element={
               <ProtectedRoute>
-                <Insights />
+                <ProfilePage />
               </ProtectedRoute>
             }
           />
-          {/* Auth routes - now separated */}
+          {/* Auth routes */}
           <Route path="/signin" element={<SignIn />} />
           <Route path="/signup" element={<SignUp />} />
           {/* Optionally, redirect /auth to /signin */}

@@ -30,7 +30,11 @@ export function AvatarDropdown() {
           onBlur={() => setOpen(false)}
         >
           <div className="px-4 py-2 border-b text-ellipsis overflow-hidden whitespace-nowrap">
-            {profile?.username ? profile.username : "User"}
+            {profile?.name
+              ? profile.name
+              : profile?.username
+              ? profile.username
+              : "User"}
           </div>
           <button
             className="w-full text-left px-4 py-2 hover:bg-accent rounded transition flex items-center gap-2"
