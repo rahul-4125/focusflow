@@ -32,8 +32,8 @@ export default function Header() {
         </div>
         <span className="hidden md:inline-flex mx-5 h-8 w-[1.5px] bg-border rounded" />
         <span className="flex items-center text-muted-foreground text-sm gap-1 font-mono ml-2">
-          {profile?.name && (
-            <span className="font-semibold">{profile.name}</span>
+          {profile?.username && (
+            <span className="font-semibold">{profile.username}</span>
           )}
           <Calendar className="w-4 h-4" /> {date}
         </span>

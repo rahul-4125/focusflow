@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export default function ProfilePage() {
   const { profile, user } = useAuthSession();
-  const [name, setName] = useState(profile?.name || "");
+  const [username, setUsername] = useState(profile?.username || "");
   const [loading, setLoading] = useState(false);
   const [appTheme, setAppTheme] = useState("default"); // stub
 
@@ -17,7 +17,7 @@ export default function ProfilePage() {
     setLoading(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ name })
+      .update({ username })
       .eq("id", user?.id);
     setLoading(false);
     if (error) {
@@ -37,15 +37,15 @@ export default function ProfilePage() {
         <h2 className="text-2xl font-bold text-center">Profile & Preferences</h2>
         <form className="flex flex-col gap-4" onSubmit={handleSave}>
           <div>
-            <label htmlFor="name" className="block font-medium mb-1">
-              Name
+            <label htmlFor="username" className="block font-medium mb-1">
+              Username
             </label>
             <Input
-              id="name"
-              value={name}
+              id="username"
+              value={username}
               required
               disabled={loading}
-              onChange={e => setName(e.target.value)}
+              onChange={e => setUsername(e.target.value)}
             />
           </div>
           <div>
