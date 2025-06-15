@@ -55,18 +55,24 @@ export const useTasksStore = create<State>((set, get) => ({
     set((state) => ({
       tasks: [{ ...t, category: t.category as "Work" | "Study" | "Personal" }, ...state.tasks],
     }));
+    // Always refetch tasks after adding to ensure up-to-date dashboard
+    await get().fetchTasks();
   },
   updateTask: async function (id, data) {
     const t = await updateTaskAPI(id, data);
     set((state) => ({
       tasks: state.tasks.map((task) => (task.id === id ? { ...t, category: t.category as "Work" | "Study" | "Personal" } : task)),
     }));
+    // Always refetch after updating
+    await get().fetchTasks();
   },
   deleteTask: async function (id) {
     await deleteTaskAPI(id);
     set((state) => ({
       tasks: state.tasks.filter((t) => t.id !== id),
     }));
+    // Always refetch after deleting
+    await get().fetchTasks();
   },
   toggleComplete: async function (id) {
     const task = get().tasks.find((t) => t.id === id);
@@ -75,7 +81,7 @@ export const useTasksStore = create<State>((set, get) => ({
     set((state) => ({
       tasks: state.tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t),
     }));
-    // Refresh tasks to update statistics and chart, so UI always matches DB
+    // Always refetch to update dashboard
     await get().fetchTasks();
   },
   get completedToday() {

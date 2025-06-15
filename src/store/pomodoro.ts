@@ -70,6 +70,8 @@ export const usePomodoroStore = create<State>((set, get) => ({
         isRunning: false,
         currentSession: currentSession + 1,
       }));
+      // Always refetch pomodoros after adding
+      await get().fetchPomodoros();
     } else {
       // End break - just reset in client
       set({
@@ -92,3 +94,4 @@ export const usePomodoroStore = create<State>((set, get) => ({
     return stats;
   },
 }));
+

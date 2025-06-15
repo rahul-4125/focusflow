@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { format } from "date-fns";
 import { fetchMoods, upsertMood } from "@/utils/api";
@@ -47,6 +46,8 @@ export const useMoodStore = create<State>((set, get) => ({
         moods: [added, ...state.moods],
       };
     });
+    // Always refetch moods after adding/updating
+    await get().fetchMoods();
   },
   get todayMood() {
     const found = get().moods.find((m) => m.date === today());
