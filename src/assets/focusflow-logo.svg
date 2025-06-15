@@ -1,0 +1,7 @@
+
+<!-- You may replace this SVG with your actual branded logo if you have one -->
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="60" height="60" rx="16" fill="#3754E6"/>
+  <circle cx="30" cy="30" r="22" fill="white"/>
+  <path d="M38 30c0 4.418-3.582 8-8 8s-8-3.582-8-8m8-8v16" stroke="#3754E6" stroke-width="2" stroke-linecap="round"/>
+</svg>
